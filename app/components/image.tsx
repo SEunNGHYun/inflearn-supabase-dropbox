@@ -1,9 +1,10 @@
 "use client";
 
+import { getImageUrl } from "app/utils/supabase/storage";
 import Image from "next/image";
 import { IconButton } from "node_modules/@material-tailwind/react";
 
-export default function DropboxImage() {
+export default function DropboxImage({ image }) {
     return (
         <div className="relative w-full flex flex-col p-4 border border-gray-100">
             <div className="absolute top-4 right-4">
@@ -16,10 +17,10 @@ export default function DropboxImage() {
                 height={"100"}
                 className="w-fit! h-auto! aspect-square rounded-xl "
                 alt="cat"
-                src={"/images/funny-cat.png"}
+                src={getImageUrl(image.name)}
             />
 
-            <div>title</div>
+            <div>{image.name}</div>
         </div>
     );
 }

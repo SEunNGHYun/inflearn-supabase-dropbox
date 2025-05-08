@@ -18,7 +18,7 @@ export default function UI() {
 
             <FileDragDropArea />
 
-            <ImageList />
+            <ImageList searchValue={searchValue} />
         </div>
     );
 }
