@@ -11,17 +11,20 @@ function handleError(err) {
 
 export async function UploadFile(formData: FormData) {
     const supabase = await createServerSupabaseClient();
-    const file = formData.get("file") as File;
-    const filePath = randomUUID() + "-" + file.name;
 
-    const { data, error } = await supabase.storage
-        .from("minibox")
-        .upload(filePath 
-            , file, { upsert: true });
+    const files = Array.from(formData.entries()).map(([name, file]) => {
+        return file as File;
+    });
 
-    if (error) handleError(error);
+    const results = await Promise.all(
+        files.map((file) => {
+            supabase.storage
+                .from("minibox")
+                .upload(file.name, file, { upsert: true });
+        })
+    );
 
-    return data;
+    return results;
 }
 
 export async function SearchFile(search: string) {
@@ -30,6 +33,18 @@ export async function SearchFile(search: string) {
     const { data, error } = await supabase.storage
         .from("minibox")
         .list(null, { search });
+
+    if (error) handleError(error);
+
+    return data;
+}
+
+export async function deleteFile(filename: string) {
+    const supabase = await createServerSupabaseClient();
+
+    const { data, error } = await supabase.storage
+        .from("minibox")
+        .remove([filename]);
 
     if (error) handleError(error);
 
